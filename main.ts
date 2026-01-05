@@ -1,32 +1,36 @@
 import puppeteer from 'puppeteer';
 import fs from 'fs';
 import path from 'path';
+import * as dotenv from "dotenv";
+
+// Read .env variables
+dotenv.config({ path: __dirname+'/.env' });
 
 // Configuration constants
-const FORM_URL ='https://forms.office.com/Pages/ResponsePage.aspx?id=GNk0MoRU0kyNmTTzaJRdhsCPWLw6KNFPrYJfUsqa-BJUNEE2MUZUUUM2UDNSM0JRWDE1OVRUQzU0OS4u';
-const DROPDOWN_BUTTON_SELECTOR = 'div[role="button"][aria-haspopup="listbox"]';
-const LISTBOX_SELECTOR = '[role="listbox"]';
-const OPTION_SELECTOR = '[role="option"]';
-const OPTION_TEXT = 'Jim Nelin';
-const EMAIL_INPUT_SELECTOR = 'input[aria-label="Single line text"]';
-const EMAIL = 'jim@jine.se';
-const SUBMIT_BUTTON_SELECTOR = 'button[data-automation-id="submitButton"]';
-const TARGET_HOURS = [8, 13, 16];
-const HEADLESS = false; // Set to true to hide the chrome window
-const DEBUG = false; // Set to true to run immediately without scheduling
-const MIN_DELAY_SECONDS = 10;
-const MAX_DELAY_SECONDS = 120;
+const FORM_URL = process.env.FORM_URL!;
+const DROPDOWN_BUTTON_SELECTOR = process.env.DROPDOWN_BUTTON_SELECTOR!;
+const LISTBOX_SELECTOR = process.env.LISTBOX_SELECTOR!;
+const OPTION_SELECTOR = process.env.OPTION_SELECTOR!;
+const OPTION_TEXT = process.env.OPTION_TEXT!;
+const EMAIL_INPUT_SELECTOR = process.env.EMAIL_INPUT_SELECTOR!;
+const EMAIL = process.env.EMAIL!;
+const SUBMIT_BUTTON_SELECTOR = process.env.SUBMIT_BUTTON_SELECTOR!;
+const TARGET_HOURS = process.env.TARGET_HOURS!.split(',').map(Number);
+const HEADLESS = process.env.HEADLESS === 'true';
+const DEBUG = process.env.DEBUG === 'true';
+const MIN_DELAY_SECONDS = parseInt(process.env.MIN_DELAY_SECONDS!);
+const MAX_DELAY_SECONDS = parseInt(process.env.MAX_DELAY_SECONDS!);
 
 // Log rotation setup
-const MAX_SIZE = 10 * 1024 * 1024; // 10MB
-const MAX_FILES = 5;
+const MAX_SIZE = parseInt(process.env.MAX_SIZE!);
+const MAX_FILES = parseInt(process.env.MAX_FILES!);
 const logDir = path.join(process.cwd(), 'logs');
 
 if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir, { recursive: true });
 }
 
-const baseName = `form-script-${new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Stockholm' })}`;
+const baseName = `form-script-${new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' })}`;
 let logFile = path.join(logDir, `${baseName}.log`);
 let logStream: fs.WriteStream = fs.createWriteStream(logFile, { flags: 'a' });
 
