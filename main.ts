@@ -1,11 +1,10 @@
-// Main entry point: initializes logger and starts the form submission scheduler
-
-// Import modules
 import { initLogger, log } from './lib/logger';
 import { config } from './lib/config';
 import { sleep } from './lib/utils';
 import { mainLoop } from './lib/scheduler';
 import { executeFormSubmission } from './lib/formSubmission';
+
+// Main entry point: initializes logger and starts the form submission scheduler
 
 // Initialize the logger
 initLogger();
