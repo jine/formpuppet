@@ -12,7 +12,8 @@ const EMAIL_INPUT_SELECTOR = 'input[aria-label="Single line text"]';
 const EMAIL = 'jim@jine.se';
 const SUBMIT_BUTTON_SELECTOR = 'button[data-automation-id="submitButton"]';
 const TARGET_HOURS = [8, 13, 16];
-const HEADLESS = false;
+const HEADLESS = false; // Set to true to hide the chrome window
+const DEBUG = false; // Set to true to run immediately without scheduling
 const MIN_DELAY_SECONDS = 10;
 const MAX_DELAY_SECONDS = 120;
 
@@ -25,7 +26,7 @@ if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir, { recursive: true });
 }
 
-const baseName = `form-script-${new Date().toISOString().slice(0,10)}`;
+const baseName = `form-script-${new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Stockholm' })}`;
 let logFile = path.join(logDir, `${baseName}.log`);
 let logStream: fs.WriteStream = fs.createWriteStream(logFile, { flags: 'a' });
 
@@ -49,7 +50,7 @@ function rotateIfNeeded() {
 }
 
 const log = (level: string, message: string) => {
-  const timestamp = new Date().toISOString();
+  const timestamp = new Date().toLocaleString('sv-SE', { timeZone: 'Europe/Stockholm' });
   const logLine = `[${timestamp}] [${level}] ${message}\n`;
   process.stdout.write(logLine);
   logStream.write(logLine, () => rotateIfNeeded());
@@ -59,17 +60,14 @@ process.on('exit', () => logStream.end());
 process.on('SIGINT', () => process.exit());
 process.on('SIGTERM', () => process.exit());
 
-// Target execution times (24-hour format)
-const TARGET_HOURS = [8, 13, 16];
-
 async function executeFormSubmission() {
-  let browser: puppeteer.Browser | undefined;
-  let page: puppeteer.Page | undefined;
+  let browser: any;
+  let page: any;
 
   try {
     log('INFO', '=== Starting form submission ===');
-    log('INFO', 'Launching browser...');
-    browser = await puppeteer.launch({ headless: HEADLESS });
+     log('INFO', 'Launching browser...');
+     browser = await puppeteer.launch({ headless: HEADLESS, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
 
     log('INFO', 'Opening new page...');
     page = await browser.newPage();
@@ -89,41 +87,47 @@ async function executeFormSubmission() {
     await page.waitForSelector(LISTBOX_SELECTOR, { visible: true, timeout: 10000 });
     log('INFO', 'Listbox visible');
 
-    const options = await page.$$eval(`${LISTBOX_SELECTOR} ${OPTION_SELECTOR}`, opts =>
-      opts.map(opt => opt.textContent?.trim() || '')
+    const options = await page.$$eval(`${LISTBOX_SELECTOR} ${OPTION_SELECTOR}`, (opts: HTMLElement[]) =>
+      opts.map((opt: HTMLElement) => opt.textContent?.trim() || '')
     );
     log('DEBUG', `Options: ${options.join(', ')}`);
 
-    const targetOptionIndex = options.findIndex(opt => opt.includes(OPTION_TEXT));
+    const targetOptionIndex = options.findIndex((opt: string) => opt.includes(OPTION_TEXT));
     if (targetOptionIndex === -1) throw new Error(`${OPTION_TEXT} not found in dropdown`);
 
     const optionElements = await page.$$(`${LISTBOX_SELECTOR} ${OPTION_SELECTOR}`);
     await optionElements[targetOptionIndex].click();
     log('SUCCESS', 'Option selected');
 
-    await page.waitForSelector(EMAIL_INPUT_SELECTOR, { visible: true, timeout: 10000 });
-    log('INFO', 'Email input visible');
-    await page.fill(EMAIL_INPUT_SELECTOR, EMAIL);
-    log('SUCCESS', 'Email filled');
+     await page.waitForSelector(EMAIL_INPUT_SELECTOR, { visible: true, timeout: 10000 });
+     log('INFO', 'Email input visible');
+     await page.type(EMAIL_INPUT_SELECTOR, EMAIL);
+     log('SUCCESS', 'Email filled');
 
-    await page.waitForSelector(SUBMIT_BUTTON_SELECTOR, { visible: true, timeout: 10000 });
+     await page.waitForSelector(SUBMIT_BUTTON_SELECTOR, { visible: true, timeout: 10000 });
 
-    log('INFO', 'NOT Submitting form...');
-    /*await Promise.all([
-      page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 30000 }).catch(e => log('WARN', `Navigation timeout: ${e.message}`)),
-      page.click(SUBMIT_BUTTON_SELECTOR),
-    ]);
-    log('SUCCESS', 'Form submitted');
-    log('INFO', `Final URL: ${page.url()}`);*/
+     const submitDelay = Math.floor(Math.random() * 15) + 1;
+     log('INFO', `Waiting ${submitDelay} seconds before submitting...`);
+     await sleep(submitDelay * 1000);
+
+     log('INFO', 'Submitting form...');
+     await Promise.all([
+       page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 30000 }).catch((e: any) => log('WARN', `Navigation timeout: ${e.message}`)),
+       page.click(SUBMIT_BUTTON_SELECTOR),
+     ]);
+     log('SUCCESS', 'Form submitted');
+     log('INFO', `Final URL: ${page.url()}`);
   } catch (error) {
     log('ERROR', `Submission failed: ${error instanceof Error ? error.message : String(error)}`);
     if (error instanceof Error && error.stack) log('STACK', error.stack);
-  } finally {
-    if (browser) {
-      await browser.close().catch(err => log('ERROR', `Browser close error: ${err.message}`));
-    }
-    log('INFO', '=== Submission completed ===');
-  }
+   } finally {
+     if (browser) {
+       // Keep browser open for 10 seconds to view result
+       await sleep(10000);
+       await browser.close().catch((err: Error) => log('ERROR', `Browser close error: ${err.message}`));
+     }
+     log('INFO', '=== Submission completed ===');
+   }
 }
 
 function getNextRunTime(): Date {
@@ -159,12 +163,18 @@ async function mainLoop() {
   log('INFO', 'Script started - running indefinitely');
   log('INFO', `Target times: ${TARGET_HOURS.map(h => `${h.toString().padStart(2,'0')}:00`).join(', ')}`);
 
+  if (DEBUG) {
+    log('INFO', 'Debug mode: running immediately');
+    await executeFormSubmission();
+    return;
+  }
+
   while (true) {
     const nextRun = getNextRunTime();
     const now = new Date();
     const waitMs = nextRun.getTime() - now.getTime();
 
-    log('INFO', `Next run scheduled at ${nextRun.toISOString().slice(0,19).replace('T', ' ')} (in ${Math.round(waitMs / 60000)} minutes)`);
+    log('INFO', `Next run scheduled at ${nextRun.toLocaleString('sv-SE', { timeZone: 'Europe/Stockholm' })} (in ${Math.round(waitMs / 60000)} minutes)`);
 
     await sleep(waitMs);
 
@@ -173,12 +183,12 @@ async function mainLoop() {
     log('INFO', `Waiting random delay of ${randomDelay} seconds before execution...`);
     await sleep(randomDelay * 1000 * 60);
 
-    //await executeFormSubmission();
+    await executeFormSubmission();
   }
 }
 
 // Start the loop
-mainLoop().catch(err => {
+mainLoop().catch((err: Error) => {
   log('FATAL', `Unexpected error in main loop: ${err.message}`);
   process.exit(1);
 });
