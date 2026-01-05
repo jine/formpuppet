@@ -8,7 +8,7 @@ let logStream: fs.WriteStream;
 
 // Initialize logger: create logs directory, set up log file stream, and handle process signals
 export function initLogger() {
-  const logDir = path.join(process.cwd(), 'logs');
+  const logDir = path.join(process.cwd(), config.LOG_DIR);
 
   if (!fs.existsSync(logDir)) {
     fs.mkdirSync(logDir, { recursive: true });

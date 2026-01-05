@@ -21,4 +21,5 @@ export const config = {
   MAX_DELAY_SECONDS: parseInt(process.env.MAX_DELAY_SECONDS!), // Maximum random delay before execution
   MAX_SIZE: parseInt(process.env.MAX_SIZE!), // Maximum log file size in bytes
   MAX_FILES: parseInt(process.env.MAX_FILES!), // Maximum number of log files to keep
+  LOG_DIR: process.env.LOG_DIR!, // Directory for log files
 };
