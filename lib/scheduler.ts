@@ -1,7 +1,6 @@
 // Scheduler module: handles timing and scheduling of form submissions
 
 // Calculate the next run time based on target hours
-// Calculate the next run time based on target hours
 export function getNextRunTime(targetHours: number[]): Date {
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
