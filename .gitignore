@@ -1,3 +1,7 @@
+# Dependencies
+node_modules/
+jspm_packages/
+
 # Logs
 logs
 *.log
@@ -7,9 +11,6 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 
-# Diagnostic reports (https://nodejs.org/api/report.html)
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-
 # Runtime data
 pids
 *.pid
@@ -17,18 +18,11 @@ pids
 *.pid.lock
 
 # Coverage directory used by tools like istanbul
-coverage
+coverage/
 *.lcov
 
 # nyc test coverage
 .nyc_output
-
-# Compiled binary addons (https://nodejs.org/api/addons.html)
-build/Release
-
-# Dependency directories
-node_modules/
-jspm_packages/
 
 # TypeScript cache
 *.tsbuildinfo
@@ -39,6 +33,12 @@ jspm_packages/
 # Optional eslint cache
 .eslintcache
 
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
 # Optional REPL history
 .node_repl_history
 
@@ -48,12 +48,12 @@ jspm_packages/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variable files
+# dotenv environment variables file
 .env
+.env.local
 .env.development.local
 .env.test.local
 .env.production.local
-.env.local
 
 # Lock files
 # Note: package-lock.json is committed for npm projects to ensure reproducible builds
@@ -66,27 +66,36 @@ jspm_packages/
 .cache
 .parcel-cache
 
-# Build output
-dist
-out
+# Next.js build / generate output
+.next
 
-# yarn v2
-.yarn/cache
-.yarn/unplugged
-.yarn/build-state.yml
-.yarn/install-state.gz
-.pnp.*
+# Nuxt.js build / generate output
+.nuxt
 
-# IntelliJ based IDEs
+# Gatsby files
+.cache/
+public
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# Temporary folders
+tmp/
+temp/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
 .idea
-
-# VSCode
-.vscode/
-
-# Finder (MacOS)
 .DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-# Windows
+# OS generated files
 Thumbs.db
 ehthumbs.db
 Desktop.ini
