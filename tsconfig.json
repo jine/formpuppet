@@ -14,6 +14,6 @@
     "watchDirectory": "useFsEvents",
     "excludeDirectories": ["node_modules", "dist", "logs", ".git"]
   },
-  "include": ["main.ts"],
+  "include": ["index.ts"],
   "exclude": ["node_modules", "dist"]
 }

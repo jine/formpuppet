@@ -20,7 +20,7 @@ formpuppet is an automated form submission tool that uses Puppeteer to programma
 
 The application consists of several modules:
 
-- **main.ts**: Entry point that initializes logging and starts the scheduler
+- **index.ts**: Entry point that initializes logging and starts the scheduler
 - **lib/scheduler.ts**: Handles timing calculations and the main execution loop
 - **lib/formSubmission.ts**: Contains the Puppeteer logic for form automation
 - **lib/logger.ts**: Manages logging to console and rotating log files
@@ -292,7 +292,7 @@ The script includes robust error handling:
 
 ```
 formpuppet/
-├── main.ts                 # Entry point
+├── index.ts                # Entry point
 ├── lib/
 │   ├── scheduler.ts        # Scheduling logic
 │   ├── formSubmission.ts   # Puppeteer automation

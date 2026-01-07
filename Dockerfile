@@ -50,7 +50,7 @@ RUN npm ci --only=production && npm cache clean --force
 # Copy built application from builder stage
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/lib ./lib
-COPY --from=builder /app/main.ts ./
+COPY --from=builder /app/index.ts ./
 
 # Create logs directory and set permissions
 RUN mkdir -p logs && chown -R puppeteer:nodejs /app
