@@ -55,14 +55,22 @@ export async function executeFormSubmission(log: (level: string, message: string
     log('INFO', `Waiting ${submitDelay} seconds before submitting...`);
     await sleep(submitDelay * 1000);
 
-    // Submit the form
-    log('INFO', 'Submitting form...');
-    await Promise.all([
-      page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 30000 }).catch((e: any) => log('WARN', `Navigation timeout: ${e.message}`)),
-      page.click(config.SUBMIT_BUTTON_SELECTOR),
-    ]);
-    log('SUCCESS', 'Form submitted');
-    log('INFO', `Final URL: ${page.url()}`);
+     // Submit the form
+     log('INFO', 'Submitting form...');
+     try {
+       await Promise.all([
+         page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 30000 }).catch((e: any) => log('WARN', `Navigation timeout: ${e.message}`)),
+         page.click(config.SUBMIT_BUTTON_SELECTOR),
+       ]);
+       log('SUCCESS', 'Form submitted');
+     } catch (error) {
+       if (error instanceof Error && error.message.includes('detached Frame')) {
+         log('INFO', 'Frame detached during submission, assuming form was submitted successfully');
+       } else {
+         throw error;
+       }
+     }
+     log('INFO', `Final URL: ${page.url()}`);
   } catch (error) {
     // Log errors
     log('ERROR', `Submission failed: ${error instanceof Error ? error.message : String(error)}`);
