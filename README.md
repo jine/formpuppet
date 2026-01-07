@@ -97,8 +97,8 @@ Create a `.env` file based on `.env.example` with the following variables:
 | `TARGET_HOURS` | Comma-separated hours (0-23) for execution | `8,13,16` |
 | `HEADLESS` | Run browser in headless mode | `true` |
 | `DEBUG` | Run once immediately and exit | `false` |
-| `MIN_DELAY_SECONDS` | Minimum random delay before execution (minutes) | `10` |
-| `MAX_DELAY_SECONDS` | Maximum random delay before execution (minutes) | `120` |
+| `MIN_DELAY_SECONDS` | Minimum random delay before execution (seconds) | `10` |
+| `MAX_DELAY_SECONDS` | Maximum random delay before execution (seconds) | `120` |
 | `MAX_SIZE` | Maximum log file size in bytes | `10485760` |
 | `MAX_FILES` | Maximum number of log files to keep | `5` |
 | `LOG_DIR` | Directory for log files | `logs` |
@@ -234,11 +234,11 @@ The script uses a sophisticated scheduling system:
 1. **Target Hours**: Define specific hours when submissions should occur
 2. **Next Run Calculation**: Finds the next target hour that hasn't passed today
 3. **Wrap-around**: If all target hours have passed, schedules for the first hour tomorrow
-4. **Random Delays**: Adds 10-120 minute random delay before each execution
+4. **Random Delays**: Adds 10-120 second random delay before each execution
 5. **Submit Delays**: Adds 1-15 second random delay before clicking submit
 
 Example: With `TARGET_HOURS=8,13,16` and current time 10:00:
-- Next run: 13:00 + random delay (10-120 minutes)
+- Next run: 13:00 + random delay (10-120 seconds)
 
 ## Browser Automation Details
 
