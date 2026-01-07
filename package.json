@@ -1,6 +1,6 @@
 {
   "name": "formpuppet",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "A simple script in TypeScript, using Puppeteer to fill in a form and submit it on a fixed schedule.",
   "main": "index.ts",
   "scripts": {
