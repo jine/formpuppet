@@ -83,7 +83,7 @@ export async function mainLoop(
     // Add random delay to avoid detection
     const randomDelay = Math.floor(Math.random() * (config.MAX_DELAY_SECONDS - config.MIN_DELAY_SECONDS + 1)) + config.MIN_DELAY_SECONDS;
     log('INFO', `Waiting random delay of ${randomDelay} seconds before execution...`);
-    await sleep(randomDelay * 1000 * 60);
+    await sleep(randomDelay * 1000);
 
     // Execute the form submission
     await executeFormSubmission(log, config, sleep);
