@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  formpuppet:
+    build: .
+    container_name: formpuppet
+    volumes:
+      # Mount .env file for configuration
+      - ./.env:/app/.env:ro
+      # Mount logs directory for persistent log access
+      - ./logs:/app/logs
+    environment:
+      # Override defaults if needed
+      - HEADLESS=true
+      - DEBUG=false
+      # Set timezone to Stockholm (matches your app)
+      - TZ=Europe/Stockholm
+    restart: unless-stopped

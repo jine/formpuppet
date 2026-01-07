@@ -1,10 +1,11 @@
 {
   "name": "formpuppet",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "A simple script in TypeScript, using Puppeteer to fill in a form and submit it on a fixed schedule.",
   "main": "main.ts",
   "scripts": {
     "start": "ts-node main.ts",
+    "start:prod": "node dist/main.js",
     "lint": "eslint main.ts",
     "typecheck": "tsc --noEmit",
     "build": "tsc"

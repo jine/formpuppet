@@ -150,6 +150,83 @@ npm run build
 node dist/main.js
 ```
 
+### Docker Setup
+
+Docker provides a containerized environment for easy deployment and development.
+
+#### Prerequisites
+
+- Docker and Docker Compose
+- Configured `.env` file
+
+#### Quick Start with Docker Compose
+
+```bash
+# Copy and configure environment
+cp .env.example .env
+# Edit .env with your form details
+
+# Build and run the container
+docker-compose up --build
+
+# Run in background
+docker-compose up -d --build
+```
+
+#### Manual Docker Commands
+
+```bash
+# Build the image
+docker build -t formpuppet .
+
+# Run with mounted .env file
+docker run -v $(pwd)/.env:/app/.env -v $(pwd)/logs:/app/logs formpuppet
+
+# Run with environment variables only (minimal setup)
+docker run -e FORM_URL=https://your-form.com -e EMAIL=your@email.com formpuppet
+```
+
+#### Docker Configuration
+
+The Docker setup includes:
+
+- **Multi-stage build** for optimized image size
+- **Chromium browser** pre-installed for Puppeteer
+- **Volume mounts** for `.env` configuration and log persistence
+- **Security hardening** with non-root user
+- **Auto-run** when container starts
+- **Health checks** for monitoring
+
+#### Environment Variables in Docker
+
+Most settings have sensible defaults. Required variables are:
+
+- `FORM_URL` - Target form URL
+- `EMAIL` - Email address for form
+- All selector variables (see `.env.example`)
+
+Optional variables with defaults:
+- `HEADLESS=true` - Run browser in headless mode
+- `DEBUG=false` - Run once for testing
+- `TARGET_HOURS=8,13,16` - Scheduled run hours
+- `LOG_DIR=logs` - Log directory
+
+#### Production Deployment
+
+```bash
+# Build optimized production image
+docker build -t formpuppet:latest .
+
+# Run in production with environment variables
+docker run -d \
+  --name formpuppet-prod \
+  -e FORM_URL=https://your-form.com \
+  -e EMAIL=prod@email.com \
+  -v /host/logs:/app/logs \
+  --restart unless-stopped \
+  formpuppet:latest
+```
+
 ## Scheduling Logic
 
 The script uses a sophisticated scheduling system:
@@ -205,7 +282,8 @@ The script includes robust error handling:
 
 ### Available Scripts
 
-- `npm run start`: Run the script with ts-node
+- `npm run start`: Run the script with ts-node (development)
+- `npm run start:prod`: Run the compiled JavaScript (production/Docker)
 - `npm run lint`: Lint TypeScript files with ESLint
 - `npm run typecheck`: Run TypeScript type checking
 - `npm run build`: Compile TypeScript to JavaScript
@@ -221,6 +299,9 @@ formpuppet/
 │   ├── logger.ts          # Logging system
 │   ├── config.ts          # Configuration loading
 │   └── utils.ts           # Utility functions
+├── Dockerfile              # Docker container definition
+├── docker-compose.yml      # Docker Compose configuration
+├── .dockerignore           # Docker build exclusions
 ├── package.json
 ├── tsconfig.json
 ├── .env.example

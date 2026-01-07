@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/SemVer).
 
+## [1.6.0] - 2026-01-07
+
+### Added
+- Docker support with multi-stage Dockerfile for containerized deployment
+- Docker Compose configuration for easy development setup
+- Volume mounts for `.env` configuration and log persistence
+- Environment variable defaults in configuration (most settings now optional)
+- Production script (`npm run start:prod`) for compiled JavaScript execution
+- Comprehensive Docker documentation in README
+- Security hardening with non-root user in Docker container
+- Health checks for container monitoring
+
+### Changed
+- Modified configuration system to provide defaults for most environment variables
+- Updated code structure documentation to include Docker files
+- Enhanced development scripts with production variant
+
+### Technical Details
+- Multi-stage Docker build with Node.js 20 LTS and Chromium for Puppeteer
+- Volume mounting for configuration and logs in Docker Compose
+- Environment variable precedence: Docker env > .env file > code defaults
+- Auto-run functionality when container starts
+
 ## [1.5.0] - 2026-01-07
 
 ### Added
