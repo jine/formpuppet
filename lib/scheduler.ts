@@ -1,5 +1,7 @@
 // Scheduler module: handles timing and scheduling of form submissions
 
+let globalNextRun: Date | null = null;
+
 // Calculate the next run time based on target hours
 export function getNextRunTime(targetHours: number[]): Date {
   const now = new Date();
@@ -44,10 +46,32 @@ export async function mainLoop(
     return;
   }
 
+  // Set up key listening for status queries
+  process.stdin.setRawMode(true);
+  process.stdin.resume();
+  process.stdin.on('data', (key: Buffer) => {
+    const keyCode = key[0];
+    if (keyCode === 13 || keyCode === 32) { // ENTER or SPACE
+      if (globalNextRun) {
+        const now = new Date();
+        const remaining = globalNextRun.getTime() - now.getTime();
+        if (remaining > 0) {
+          log('INFO', `Remaining time: ${Math.round(remaining / 60000)} minutes`);
+        } else {
+          log('INFO', 'Execution time has passed');
+        }
+      }
+    } else if (keyCode === 3) { // Ctrl+C
+      log('INFO', 'Exiting...');
+      process.exit(0);
+    }
+  });
+
   // Infinite loop to schedule and run submissions
   while (true) {
     // Calculate next run time
     const nextRun = getNextRunTime(config.TARGET_HOURS);
+    globalNextRun = nextRun;
     const now = new Date();
     const waitMs = nextRun.getTime() - now.getTime();
 
