@@ -46,6 +46,9 @@ function rotateIfNeeded() {
 
 // Log a message with level and timestamp to both console and log file
 export const log = (level: string, message: string) => {
+  // Only log DEBUG messages if DEBUG flag is set
+  if (level === 'DEBUG' && !config.DEBUG) return;
+
   const timestamp = new Date().toLocaleString('sv-SE', { timeZone: 'Europe/Stockholm' });
   const logLine = `[${timestamp}] [${level}] ${message}\n`;
   process.stdout.write(logLine);
