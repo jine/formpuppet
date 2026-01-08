@@ -8,7 +8,10 @@
     "start:prod": "node dist/index.js",
     "lint": "eslint index.ts",
     "typecheck": "tsc --noEmit",
-    "build": "tsc"
+    "build": "tsc",
+    "build:docker": "docker build -t formpuppet .",
+    "run:docker": "docker run -d --name formpuppet formpuppet",
+    "deploy:docker": "bun run build:docker && bun run run:docker"
   },
   "dependencies": {
     "dotenv": "^17.2.3",
