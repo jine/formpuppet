@@ -102,3 +102,6 @@ Desktop.ini
 
 # Dist
 dist/
+
+# bun
+bun.lock
