@@ -98,7 +98,7 @@ Create a `.env` file based on `.env.example` with the following variables:
 | `HEADLESS` | Run browser in headless mode | `true` |
 | `DEBUG` | Run once immediately and exit | `false` |
 | `MIN_DELAY_SECONDS` | Minimum random delay before execution (seconds) | `10` |
-| `MAX_DELAY_SECONDS` | Maximum random delay before execution (seconds) | `120` |
+| `MAX_DELAY_SECONDS` | Maximum random delay before execution (seconds) | `420` |
 | `MAX_SIZE` | Maximum log file size in bytes | `10485760` |
 | `MAX_FILES` | Maximum number of log files to keep | `5` |
 | `LOG_DIR` | Directory for log files | `logs` |
@@ -148,6 +148,33 @@ npm run start
 ```bash
 npm run build
 node dist/main.js
+```
+
+#### Running in Background
+For long-running sessions, use tmux or screen to run the app in the background while maintaining the ability to view logs and stop it with CTRL+C.
+
+**Using tmux:**
+```bash
+# Start in background
+npm run start:tmux
+
+# Attach to view/stop
+npm run attach:tmux
+
+# Kill session
+npm run stop:tmux
+```
+
+**Using screen:**
+```bash
+# Start in background
+npm run start:screen
+
+# Attach to view/stop
+npm run attach:screen
+
+# Kill session
+npm run stop:screen
 ```
 
 ### Docker Setup
@@ -234,11 +261,11 @@ The script uses a sophisticated scheduling system:
 1. **Target Hours**: Define specific hours when submissions should occur
 2. **Next Run Calculation**: Finds the next target hour that hasn't passed today
 3. **Wrap-around**: If all target hours have passed, schedules for the first hour tomorrow
-4. **Random Delays**: Adds 10-120 second random delay before each execution
+4. **Random Delays**: Adds 10-420 second random delay before each execution
 5. **Submit Delays**: Adds 1-15 second random delay before clicking submit
 
 Example: With `TARGET_HOURS=8,13,16` and current time 10:00:
-- Next run: 13:00 + random delay (10-120 seconds)
+- Next run: 13:00 + random delay (10-420 seconds)
 
 ## Browser Automation Details
 
@@ -284,6 +311,12 @@ The script includes robust error handling:
 
 - `npm run start`: Run the script with ts-node (development)
 - `npm run start:prod`: Run the compiled JavaScript (production/Docker)
+- `npm run start:tmux`: Start the script in a detached tmux session (background)
+- `npm run attach:tmux`: Attach to the running tmux session
+- `npm run stop:tmux`: Kill the tmux session
+- `npm run start:screen`: Start the script in a detached screen session (background)
+- `npm run attach:screen`: Attach to the running screen session
+- `npm run stop:screen`: Kill the screen session
 - `npm run lint`: Lint TypeScript files with ESLint
 - `npm run typecheck`: Run TypeScript type checking
 - `npm run build`: Compile TypeScript to JavaScript

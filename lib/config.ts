@@ -21,7 +21,7 @@ export const config = {
   HEADLESS: process.env.HEADLESS ? process.env.HEADLESS === 'true' : true,
   DEBUG: process.env.DEBUG ? process.env.DEBUG === 'true' : false,
   MIN_DELAY_SECONDS: process.env.MIN_DELAY_SECONDS ? parseInt(process.env.MIN_DELAY_SECONDS) : 10,
-  MAX_DELAY_SECONDS: process.env.MAX_DELAY_SECONDS ? parseInt(process.env.MAX_DELAY_SECONDS) : 120,
+  MAX_DELAY_SECONDS: process.env.MAX_DELAY_SECONDS ? parseInt(process.env.MAX_DELAY_SECONDS) : 420,
   MAX_SIZE: process.env.MAX_SIZE ? parseInt(process.env.MAX_SIZE) : 10485760,
   MAX_FILES: process.env.MAX_FILES ? parseInt(process.env.MAX_FILES) : 5,
   LOG_DIR: process.env.LOG_DIR || 'logs',

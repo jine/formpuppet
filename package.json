@@ -1,11 +1,17 @@
 {
   "name": "formpuppet",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "A simple script in TypeScript, using Puppeteer to fill in a form and submit it on a fixed schedule.",
   "main": "index.ts",
   "scripts": {
     "start": "ts-node index.ts",
     "start:prod": "node dist/index.js",
+    "start:tmux": "tmux new-session -d -s formpuppet 'npm run start'",
+    "attach:tmux": "tmux attach -t formpuppet",
+    "stop:tmux": "tmux kill-session -t formpuppet",
+    "start:screen": "screen -d -m -S formpuppet npm run start",
+    "attach:screen": "screen -r formpuppet",
+    "stop:screen": "screen -X -S formpuppet quit",
     "lint": "eslint index.ts",
     "typecheck": "tsc --noEmit",
     "build": "tsc",
